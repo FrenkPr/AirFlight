@@ -393,6 +393,34 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""QuitGame"",
+            ""id"": ""c8e1427b-db72-4b6c-af47-f528fb2d3711"",
+            ""actions"": [
+                {
+                    ""name"": ""QuitGameBtnPressed"",
+                    ""type"": ""Button"",
+                    ""id"": ""c3c9a249-dc64-40b5-857a-1e0e4622e6a3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""258b01ee-7efb-4c2f-9b81-66736169daaf"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuitGameBtnPressed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -412,6 +440,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         // ToggleCameraView
         m_ToggleCameraView = asset.FindActionMap("ToggleCameraView", throwIfNotFound: true);
         m_ToggleCameraView_ToggleCameraViewBtnPressed = m_ToggleCameraView.FindAction("ToggleCameraViewBtnPressed", throwIfNotFound: true);
+        // QuitGame
+        m_QuitGame = asset.FindActionMap("QuitGame", throwIfNotFound: true);
+        m_QuitGame_QuitGameBtnPressed = m_QuitGame.FindAction("QuitGameBtnPressed", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -632,6 +663,39 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         }
     }
     public ToggleCameraViewActions @ToggleCameraView => new ToggleCameraViewActions(this);
+
+    // QuitGame
+    private readonly InputActionMap m_QuitGame;
+    private IQuitGameActions m_QuitGameActionsCallbackInterface;
+    private readonly InputAction m_QuitGame_QuitGameBtnPressed;
+    public struct QuitGameActions
+    {
+        private @PlayerInputs m_Wrapper;
+        public QuitGameActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @QuitGameBtnPressed => m_Wrapper.m_QuitGame_QuitGameBtnPressed;
+        public InputActionMap Get() { return m_Wrapper.m_QuitGame; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(QuitGameActions set) { return set.Get(); }
+        public void SetCallbacks(IQuitGameActions instance)
+        {
+            if (m_Wrapper.m_QuitGameActionsCallbackInterface != null)
+            {
+                @QuitGameBtnPressed.started -= m_Wrapper.m_QuitGameActionsCallbackInterface.OnQuitGameBtnPressed;
+                @QuitGameBtnPressed.performed -= m_Wrapper.m_QuitGameActionsCallbackInterface.OnQuitGameBtnPressed;
+                @QuitGameBtnPressed.canceled -= m_Wrapper.m_QuitGameActionsCallbackInterface.OnQuitGameBtnPressed;
+            }
+            m_Wrapper.m_QuitGameActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @QuitGameBtnPressed.started += instance.OnQuitGameBtnPressed;
+                @QuitGameBtnPressed.performed += instance.OnQuitGameBtnPressed;
+                @QuitGameBtnPressed.canceled += instance.OnQuitGameBtnPressed;
+            }
+        }
+    }
+    public QuitGameActions @QuitGame => new QuitGameActions(this);
     public interface IMoveActions
     {
         void OnForwardDir(InputAction.CallbackContext context);
@@ -651,5 +715,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     public interface IToggleCameraViewActions
     {
         void OnToggleCameraViewBtnPressed(InputAction.CallbackContext context);
+    }
+    public interface IQuitGameActions
+    {
+        void OnQuitGameBtnPressed(InputAction.CallbackContext context);
     }
 }

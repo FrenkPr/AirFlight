@@ -48,6 +48,19 @@ public class AirPlaneController : MonoBehaviour
         return currentPower;
     }
 
+    public void QuitGame()
+    {
+        if (InputsController.Instance.Inputs["QuitGameBtnPressed"].triggered)
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+
+#else
+            Application.Quit();
+#endif
+        }
+    }
+
     public void Rotate()
     {
         //Vector3 dir = new Vector3(Input.GetAxis("AirplanePitch"), Input.GetAxis("AirplaneYaw"), Input.GetAxis("AirplaneRoll"));
@@ -76,6 +89,9 @@ public class AirPlaneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //player inputs
+        QuitGame();
+        
         ToggleV_Tol();
 
         Rotate();
